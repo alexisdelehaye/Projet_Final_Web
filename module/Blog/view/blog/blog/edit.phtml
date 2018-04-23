@@ -1,0 +1,66 @@
+<?php
+
+$title = 'Edit album';
+$this->headTitle($title);
+
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<?php
+
+$titre = $form->get('titre');
+$titre->setAttribute('class', 'form-control');
+$titre->setAttribute('placeholder', 'titre de votre poste');
+
+$auteur = $form->get('auteur');
+$auteur->setAttribute('class', 'form-control');
+$auteur->setAttribute('placeholder', 'auteur du poste');
+
+$resume = $form->get('resume');
+$resume->setAttribute('class', 'form-control');
+$resume->setAttribute('placeholder', 'resumé du poste');
+
+$texte = $form->get('texte');
+$texte->setAttribute('class', 'form-control');
+$texte->setAttribute('placeholder', 'contenu du poste');
+
+
+$submit = $form->get('submit');
+$submit->setAttribute('class', 'btn btn-primary');
+
+$form->setAttribute('edit', $this->url('Blog', [
+    'action' => 'edit',
+    'id'     => $id,
+]));
+
+$form->prepare();
+
+echo $this->form()->openTag($form);
+
+?>
+    <div class="form-group">
+        <?= $this->formLabel($titre) ?>
+        <?= $this->formElement($titre) ?>
+        <?= $this->formElementErrors()->render($titre, ['class' => 'help-block']) ?>
+    </div>
+    <div class="form-group">
+        <?= $this->formLabel($auteur) ?>
+        <?= $this->formElement($auteur) ?>
+        <?= $this->formElementErrors()->render($auteur, ['class' => 'help-block']) ?>
+    </div>
+    <div class="form-group">
+        <?= $this->formLabel($resume) ?>
+        <?= $this->formElement($resume) ?>
+        <?= $this->formElementErrors()->render($resume, ['class' => 'help-block']) ?>
+    </div>
+    <div class="form-group">
+        <?= $this->formLabel($texte) ?>
+        <?= $this->formElement($texte) ?>
+        <?= $this->formElementErrors()->render($texte, ['class' => 'help-block']) ?>
+    </div>
+<?php
+
+echo $this->formSubmit($submit);
+echo $this->formHidden($form->get('id'));
+echo $this->form()->closeTag();
+
+?>
