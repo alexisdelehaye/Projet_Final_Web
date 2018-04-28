@@ -69,7 +69,7 @@ class poste implements InputFilterAwareInterface
 
         $inputFilter->add([
             'name' => 'auteur',
-            'required' => true,
+            'required' => false,
             'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],

@@ -34,10 +34,10 @@ class posteTable
         return $row;
     }
 
-    public function savePoste(poste $poste)
+    public function savePoste(poste $poste, $auteur)
     {
         $data = [
-            'auteur' => $poste->auteur,
+            'auteur' => $auteur,
             'texte'  => $poste->texte,
             'titre' => $poste->titre,
             'resume' =>$poste->resume,

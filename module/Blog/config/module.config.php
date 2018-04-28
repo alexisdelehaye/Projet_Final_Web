@@ -4,6 +4,7 @@ namespace Blog;
 use Zend\Router\Http\Segment;
 use Zend\Router\Http\Literal;
 use Zend\ServiceManager\Factory\InvokableFactory;
+use User\Controller\AuthController;
 
 return [
     'router' => [
@@ -22,6 +23,20 @@ return [
                     ],
                 ],
             ],
+            'Auth' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/Auth[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => AuthController::class,
+                        'action'     => 'SignUp',
+                    ],
+                ],
+            ]
             ],
         ],
 
@@ -45,5 +60,16 @@ return [
 
 
 */
+'service_manager' => [
+    'factories' => [
+        Services\AuctionTable::class => Services\Factories\AuctionTableFactory::class,
+        Services\AuctionTableGateway::class => Services\Factories\AuctionTableGatewayFactory::class,
+        Services\NavManager::class => Services\Factories\NavManagerFactory::class,
+     ],
+],
+
+
+
 ];
+
 

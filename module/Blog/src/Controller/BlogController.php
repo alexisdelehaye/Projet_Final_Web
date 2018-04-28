@@ -8,24 +8,38 @@
 
 namespace Blog\Controller;
 use Blog\Form\BlogForm;
+use Blog\Form\CommentairesForm;
+use Blog\Models\commentaire;
+use Blog\Models\commentaireTable;
 use Blog\Models\poste;
 use Blog\Models\posteTable;
+use User\Services\UserManager;
+use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class BlogController extends AbstractActionController {
 
     private $tableBlog;
+    private $authService;
+    private $_userManager;
+    private $listeCommentaire;
 
 
-    public function __construct(posteTable $table){
+    public function __construct(posteTable $table,AuthenticationService $authService,UserManager $userManager, commentaireTable $commentaireTable){
         $this->tableBlog = $table;
+        $this->authService = $authService;
+        $this->_userManager = $userManager;
+        $this->listeCommentaire = $commentaireTable;
     }
 
     public function indexAction()
     {
+        $identity = $this->authService->getIdentity();
+        $privilege = $this->_userManager->findPrivilege($identity);
         return new ViewModel([
             'posts' => $this->tableBlog->fetchAll(),
+            'privilege' => $privilege,
         ]);
     }
 
@@ -41,6 +55,7 @@ class BlogController extends AbstractActionController {
 
         try {
              $product = $this->tableBlog->getPoste($id);
+            $listeCommantaires = $this->listeCommentaire->getListeCommentaireParPost($id);
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('Blog', ['action' => 'index']);
         }
@@ -48,7 +63,11 @@ class BlogController extends AbstractActionController {
 
 
         $view = new ViewModel();
+        $identity = $this->authService->getIdentity();
+        $user = $this->_userManager->findByUsername($identity);
         $view->setVariable('details',$product);
+        $view->setVariable('user',$user);
+        $view->setVariable('listeCommentaires',$listeCommantaires);
         $view->setTemplate('blog/blog/details');
         return $view;
 
@@ -57,6 +76,8 @@ class BlogController extends AbstractActionController {
     public function addAction()
     {
         $form = new BlogForm();
+        $identity = $this->authService->getIdentity();
+        $user = $this->_userManager->findByUsername($identity);
         $form->get('submit')->setValue('Add');
 
         $request = $this->getRequest();
@@ -66,15 +87,17 @@ class BlogController extends AbstractActionController {
         }
 
         $blog = new poste();
+        $userName = $user->username;
         $form->setInputFilter($blog->getInputFilter());
         $form->setData($request->getPost());
+
 
         if (! $form->isValid()) {
             return ['form' => $form];
         }
 
         $blog->exchangeArray($form->getData());
-        $this->tableBlog->savePoste($blog);
+        $this->tableBlog->savePoste($blog,$userName);
         return $this->redirect()->toRoute('Blog');
     }
 
@@ -96,6 +119,9 @@ class BlogController extends AbstractActionController {
         }
 
         $form = new BlogForm();
+        $identity = $this->authService->getIdentity();
+        $user = $this->_userManager->findByUsername($identity);
+        $userName = $user->username;
         $form->bind($poste);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -113,7 +139,7 @@ class BlogController extends AbstractActionController {
             return $viewData;
         }
 
-        $this->tableBlog->savePoste($poste);
+        $this->tableBlog->savePoste($poste,$userName);
 
         // Redirect to album list
         return $this->redirect()->toRoute('Blog', ['action' => 'index']);
@@ -148,4 +174,73 @@ class BlogController extends AbstractActionController {
             'poste' => $this->tableBlog->getPoste($id),
         ];
     }
+
+    public function ajouterCommentaireAction(){
+
+        $id = (int) $this->params()->fromRoute('id', 0);
+
+        if (0 === $id) {
+            return $this->redirect()->toRoute('Blog', ['action' => 'add']);
+        }
+
+
+        $i=$this->listeCommentaire->getLastidComm();
+        $form = new CommentairesForm();
+        $form->get('submit')->setValue('Add');
+
+        $request = $this->getRequest();
+
+        if (! $request->isPost()) {
+            return ['form' => $form];
+        }
+
+        $idPost = $id;
+        $commentaire = new Commentaire();
+        $identity = $this->authService->getIdentity();
+        $user = $this->_userManager->findByUsername($identity);
+        $userId = $user->id;
+        $form->setInputFilter($commentaire->getInputFilter());
+        $form->setData($request->getPost());
+
+
+        if (! $form->isValid()) {
+            return ['form' => $form];
+        }
+
+        $commentaire->exchangeArray($form->getData());
+        $this->listeCommentaire->saveCommentaire($commentaire,$userId,$idPost,$i);
+        return $this->redirect()->toRoute('Blog');
+
+
+    }
+
+
+    public function deleteCommentaireAction(){
+        $id = (int) $this->params()->fromRoute('id', 1);
+
+
+        /* if (!$id) {
+             return $this->redirect()->toRoute('Blog');
+         }
+
+        */
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $del = $request->getPost('del', 'No');
+
+            if ($del == 'Yes') {
+                $id = (int) $request->getPost('id_commentaire');
+                $this->listeCommentaire->deleteCommentaire($id);
+            }
+
+            return $this->redirect()->toRoute('Blog');
+        }
+
+        return [
+            'id'    => $id,
+            'comm' => $this->listeCommentaire->getCommentaire($id),
+        ];
+    }
+
 }

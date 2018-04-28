@@ -11,9 +11,6 @@ $titre = $form->get('titre');
 $titre->setAttribute('class', 'form-control');
 $titre->setAttribute('placeholder', 'titre de votre poste');
 
-$auteur = $form->get('auteur');
-$auteur->setAttribute('class', 'form-control');
-$auteur->setAttribute('placeholder', 'auteur du poste');
 
 $resume = $form->get('resume');
 $resume->setAttribute('class', 'form-control');
@@ -40,11 +37,6 @@ echo $this->form()->openTag($form);
     <?= $this->formElement($titre) ?>
     <?= $this->formElementErrors()->render($titre, ['class' => 'help-block']) ?>
 </div>
-<div class="form-group" id="froala-editor">
-    <?= $this->formLabel($auteur) ?>
-    <?= $this->formElement($auteur) ?>
-    <?= $this->formElementErrors()->render($auteur, ['class' => 'help-block']) ?>
-</div>
     <div class="form-group" id="froala-editor">
         <?= $this->formLabel($resume) ?>
         <?= $this->formElement($resume) ?>
@@ -65,10 +57,3 @@ echo $this->formHidden($form->get('date'));
 echo $this->form()->closeTag();
 
 ?>
-
-
-    <script>
-    $(function() {
-        $('textarea#froala-editor').froalaEditor()
-    });
-</script>

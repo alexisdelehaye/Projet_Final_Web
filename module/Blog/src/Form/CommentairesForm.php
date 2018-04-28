@@ -4,7 +4,7 @@ namespace Blog\Form;
 
 use Zend\Form\Form;
 
-class BlogForm extends Form
+class CommentairesForm extends Form
 {
     public function __construct($name = null)
     {
@@ -13,44 +13,31 @@ class BlogForm extends Form
         //$this->setAttribute('method', 'GET'); // Default is POST
 
         $this->add([
-            'name' => 'id',
+            'name' => 'id_commentaire',
             'type' => 'hidden',
         ]);
 
         $this->add([
-            'name' => 'titre',
+            'name' => 'user_id',
+            'type' => 'hidden',
+        ]);
+        $this->add([
+            'name' => 'text',
             'type' => 'Textarea',
             'options' => [
-                'label' => 'titre',
+                'label' => 'contenu',
             ],
         ]);
 
-        $this->add([
-            'name'=>'resume',
-            'type'=> 'Textarea',
-            'options' => [
-                'label' => 'resume',
-            ],
-        ]);
-
-        $this->add([
-            'name'=>'auteur',
-            'type'=> 'Text',
-            'options' => [
-                'label' => 'auteur',
-            ],
-        ]);
-
-        $this->add([
-            'name'=>'texte',
-            'type'=> 'Textarea',
-            'options' => [
-                'label' => 'texte',
-            ],
-        ]);
 
         $this->add([
             'name' => 'date',
+            'type' => 'hidden',
+        ]);
+
+
+        $this->add([
+            'name' => 'post_id',
             'type' => 'hidden',
         ]);
 

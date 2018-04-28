@@ -1,0 +1,35 @@
+<?php
+
+$title = 'Ajouter un commentaire à ce produit';
+$this->headTitle($title);
+
+?>
+    <h1><?= $this->escapeHtml($title) ?></h1>
+<?php
+
+$contenu = $form->get('text');
+$contenu->setAttribute('class', 'form-control');
+$contenu->setAttribute('placeholder', 'contenu de votre commentaire');
+
+
+$submit = $form->get('submit');
+$submit->setAttribute('class', 'btn btn-primary');
+
+$form->setAttribute('action', $this->url('Blog', ['action' => ' ajouterCommentaire']));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+
+?>
+    <div class="form-group" id="froala-editor">
+        <?= $this->formLabel($contenu) ?>
+        <?= $this->formElement($contenu) ?>
+        <?= $this->formElementErrors()->render($contenu, ['class' => 'help-block']) ?>
+    </div>
+
+<?php
+
+echo $this->formSubmit($submit);
+echo $this->form()->closeTag();
+
+?>

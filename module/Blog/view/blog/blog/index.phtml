@@ -7,6 +7,9 @@ $this->headTitle($title);
 <h1><?= $this->escapeHtml($title) ?></h1>
 
     <a href="<?= $this->url('Blog', ['action' => 'add']) ?>">Ajouter un post sur ce blog</a>
+    <a href="<?= $this->url('Auth', ['action' => 'signUp']) ?>">S'inscire sur le site</a>
+    <a href="<?= $this->url('Auth', ['action' => 'login']) ?>">Se connecter</a>
+<?php if ($privilege == null) {?>  <a href="<?= $this->url('Auth', ['action' => 'logout']) ?>">Se décconnecter</a> <?php  } ?>
 
 <?php foreach ($posts as $post) { ?>
 <div class="card" style="width: 18rem;">
@@ -18,8 +21,10 @@ $this->headTitle($title);
     <ul class="list-group list-group-flush">
         <li class="list-group-item"><?= $this->escapeHtml($post->resume) ?></li>
         <li><a href="<?= $this->url('Blog', ['action' => 'details', 'id' => $post->id]) ?>">Lire le suite du post</a></li>
-        <li> <a href="<?= $this->url('Blog', ['action' => 'delete', 'id' => $post->id]) ?>">Supprimer</a></td></li>
-        <li> <a href="<?= $this->url('Blog', ['action' => 'edit', 'id' => $post->id]) ?>">Modifier ce post</a></td></li>
+        <li><?= $this->escapeHtml($privilege) ?></li>
+      <?php if ($privilege ==1) {?>  <li> <a href="<?= $this->url('Blog', ['action' => 'delete', 'id' => $post->id]) ?>">Supprimer</a></td></li>
+        <li> <a href="<?= $this->url('Blog', ['action' => 'edit', 'id' => $details->id]) ?>">Modifier ce poste</a></td></li>
+      <?php  } ?>
     </ul>
 </div>
 

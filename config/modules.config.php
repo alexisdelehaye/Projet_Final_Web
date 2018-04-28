@@ -12,6 +12,10 @@
  */
 
 return [
+    'Zend\I18n',
+    'Zend\InputFilter',
+    'Zend\Filter',
+    'Zend\Hydrator',
     'Zend\ServiceManager\Di',
     'Zend\Session',
     'Zend\Mvc\Plugin\Prg',
@@ -38,5 +42,5 @@ return [
     'Zend\Validator',
     'Blog',
     //'Application',
-    //'User',
+    'User'
 ];

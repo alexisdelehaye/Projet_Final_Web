@@ -10,6 +10,18 @@ $this->headTitle($title);
 <h5 class="card-title"><?= $this->escapeHtml($details->titre) ?></h5>
         <p><?= $this->escapeHtml($details->auteur) ?></p>
 <p style="white-space: pre-line"><?= $this->escapeHtml($details->texte) ?></p>
+<p>id du post : <?= $this->escapeHtml($details->id) ?></p>
+<?php if ($user->idprivilege ==1) {?>
         <p><a href="<?= $this->url('Blog', ['action' => 'delete', 'id' => $details->id]) ?>">Supprimer ce post</a></p>
-        <p><li> <a href="<?= $this->url('Blog', ['action' => 'edit', 'id' => $details->id]) ?>">Modifier ce post</a></td></li></p>
+        <p><li> <a href="<?= $this->url('Blog', ['action' => 'edit', 'id' => $details->id]) ?>">Modifier ce post</a></li>
+    <br/>
+    <li> <a href="<?= $this->url('Blog', ['action' => 'ajouterCommentaire', 'id' => $details->id]) ?>">ajouter un commentaire ce post</a></li>
 
+<?php  } ?>
+<?php foreach ($listeCommentaires as $com) { ?>
+    <p><?= $this->escapeHtml($com->id_commentaire) ?></p>
+    <p><?= $this->escapeHtml($com->text) ?></p>
+    <p><?= $this->escapeHtml($com->date) ?></p>
+    <p><a href="<?= $this->url('Blog', ['action' => 'deleteCommentaire', 'id' => $com->id_commentaire]) ?>">Supprimer</a></p>
+    <br/>
+<?php } ?>
